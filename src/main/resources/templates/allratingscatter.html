@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AllMoviesRatingScatter</title>
+    <!-- 引入 echarts.js -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/echarts.js"></script>
+    <!-- html 样式设置 -->
+    <style type="text/css">
+        html{
+          height: 100%;
+          margin: 0;
+        }
+        body{
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          background-color: rgba(24,20,50,1);
+        }
+        #main{
+          height: 100%;
+          margin: 0;
+        }
+    </style>
+</head>
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+    <div id="main" style="width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+    // 定义图表构建函数
+    function loadLocalDataAndShow(){
+        // 初始化echarts实例
+        var chartDom = document.getElementById('main');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        // 指定图表的配置项和数据
+        option = {
+            // 标题配置
+            title: {
+                text: 'DouBan & IMDB 评分散点图',
+                top: 30,
+                left:  "center",
+                textStyle: {
+                    fontSize: 40,
+                    color: '#FAFAD2'
+                }
+            },
+            // 页面大小配置
+            grid: {
+                top: 100,
+                bottom: 100,
+                left: 100,
+                right: 100
+            },
+            backgroundColor: "rgba(24,20,50,1)",
+            textStyle: {
+                color: 'rgba(255, 255, 255, 0.9)'
+            },
+            color: ['#57fcd5', '#ff6060'],
+            // 图例配置
+            legend: {
+                show: true,
+                data: ['DouBan', 'IMDB'],
+                orient: 'vertical',
+                x:'right',
+                y:'top',
+                padding: [30, 30, 0, 0],
+                itemWidth: 40,
+                itemHeight: 20,
+                textStyle: {
+                    color: "rgba(255, 255, 255, 1)",
+                    fontSize: '15'
+                }
+            },
+            // 坐标轴配置
+            xAxis: {
+                name: '评分',
+                nameLocation: 'middle',
+                nameGap: 30,
+                nameTextStyle: {
+                    fontSize: 30,
+                    color: '#FAFAD2'
+                },
+                type: "value",
+                scale: true,
+                // 刻度标签设置
+                axisLabel: {
+                    formatter: "{value}",
+                    fontSize: 15,
+                },
+                // 分隔线
+                splitLine: {
+                    show: false
+                },
+                // 线条设置
+                axisLine:{
+                    lineStyle: {
+                        color: 'white',
+                        width: 3,
+                    }
+                }
+
+            },
+            yAxis: {
+                name: '排名',
+                nameLocation: 'middle',
+                nameGap: 30,
+                nameTextStyle: {
+                    fontSize: 30,
+                    color: '#FAFAD2'
+                },
+                type: "value",
+                scale: true,
+                axisLabel: {
+                    formatter: "{value}",
+                    fontSize: 15,
+                },
+                // splitLine: {
+                //     show: false
+                // },
+                axisLine:{
+                    lineStyle: {
+                        color: 'white',
+                        width: 3,
+                    }
+                }
+            },
+            // 提示框组件配置
+            tooltip: {
+                position: 'top',
+                // 自定义提示文本格式
+                formatter: function(imdbData){
+                    return imdbData.name + ": ["+ imdbData.value +  "]";
+                },
+            },
+            // 图表配置 -- 散点图
+            series: [
+                // 豆瓣电影数据
+                {
+                    name: 'DouBan',
+                    type: 'scatter',
+                    data: [],   // 数据初始化时为空，后续动态加载
+                    symbolSize: 8
+                },
+                // IMDB 电影数据
+                {
+                    name: 'IMDB',
+                    type: 'scatter',
+                    data: [],   // 数据初始化时为空，后续动态加载
+                    symbolSize: 8
+                }
+            ]
+        };
+        // 初始化配置项
+        myChart.setOption(option);
+
+        // 声明数据数组变量
+        var doubanData = [];
+        var imdbData = [];
+
+        /*
+            ajax 实现 json 数据的导入与处理
+         */
+        // douban json 数据导入
+        $.ajax({
+            type : 'get',   // 获取方法
+            url : 'json/doubaninfinity.json',   // 路径
+            dataType : "json",    // 数据类型
+            // 获取成功，对数据进行处理
+            success : function(result){
+                // 声明变量
+                var doubanName = [];
+                var doubanRating = [];
+                var doubanRank = []
+                // 提取数组中的每一个元素的 name, rating, rank 分别存储
+                $.each(result, function(index, item){
+                    doubanName.push(item.name);
+                    doubanRating.push(item.rating);
+                    doubanRank.push(item.rank);
+                });
+                // 将数据封装成所需格式
+                // key: name
+                // value: [rating, rank]
+                for (var i = 0; i <result.length; i++){
+                    doubanData.push({name: doubanName[i], value: [doubanRating[i], doubanRank[i]]})
+                }
+                // console.log() 验证格式
+                // console.log(doubanData);
+                // 隐藏加载效果，完成数据配置
+                myChart.hideLoading();
+                myChart.setOption({
+                    series : [ {
+                        name: 'DouBan',
+                        data: doubanData,
+                    }]
+                });
+            }
+        })
+
+        // imdb json 数据导入
+        $.ajax({
+            type : 'get',   // 获取方法
+            url : 'json/imdbinfinity.json',   // 路径
+            dataType : "json",    // 数据类型
+            // 获取成功，对数据进行处理
+            success : function(result){
+                // 声明变量
+                var imdbName = [];
+                var imdbRating = [];
+                var imdbRank = [];
+                // 提取数组中的每一个元素的 name, rating, rank 分别存储
+                $.each(result, function(index, item){
+                    imdbName.push(item.name);
+                    imdbRating.push(item.rating);
+                    imdbRank.push(item.rank);
+                });
+                // 将数据封装成所需格式
+                // key: name
+                // value: [rating, rank]
+                for (var i = 0; i <result.length; i++){
+                        imdbData.push({name: imdbName[i], value: [imdbRating[i], imdbRank[i]]})
+                    }
+                    // console.log() 验证格式
+                    // console.log(imdbData);
+                    // 隐藏加载效果，完成数据配置
+                    myChart.hideLoading();
+                    myChart.setOption({
+                        series : [{
+                            name: 'IMDB',
+                            data : imdbData
+                        }]
+                    });
+                }
+            })
+
+    }
+    // 执行图表构建函数
+    loadLocalDataAndShow();
+
+</script>
+</body>
+</html>

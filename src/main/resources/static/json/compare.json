@@ -1,0 +1,213 @@
+[
+	{
+		"movietype" : "Action",
+		"rating" : "7.1",
+		"popularity" : "-130761"
+	},
+	{
+		"movietype" : "Adventure",
+		"rating" : "7.2",
+		"popularity" : "-108197"
+	},
+	{
+		"movietype" : "Animation",
+		"rating" : "7.6",
+		"popularity" : "-55122"
+	},
+	{
+		"movietype" : "Biography",
+		"rating" : "7.6",
+		"popularity" : "-86377"
+	},
+	{
+		"movietype" : "Comedy",
+		"rating" : "6.9",
+		"popularity" : "-104560"
+	},
+	{
+		"movietype" : "Crime",
+		"rating" : "7.3",
+		"popularity" : "-125109"
+	},
+	{
+		"movietype" : "Drama",
+		"rating" : "7.6",
+		"popularity" : "-129713"
+	},
+	{
+		"movietype" : "Family",
+		"rating" : "7.1",
+		"popularity" : "-133594"
+	},
+	{
+		"movietype" : "Fantasy",
+		"rating" : "7.1",
+		"popularity" : "-161590"
+	},
+	{
+		"movietype" : "Film_noir",
+		"rating" : "8.0",
+		"popularity" : "-66032"
+	},
+	{
+		"movietype" : "History",
+		"rating" : "7.5",
+		"popularity" : "-115817"
+	},
+	{
+		"movietype" : "Horror",
+		"rating" : "6.6",
+		"popularity" : "-95907"
+	},
+	{
+		"movietype" : "Music",
+		"rating" : "7.5",
+		"popularity" : "-102803"
+	},
+	{
+		"movietype" : "Musical",
+		"rating" : "7.4",
+		"popularity" : "-129138"
+	},
+	{
+		"movietype" : "Mystery",
+		"rating" : "7.1",
+		"popularity" : "-119586"
+	},
+	{
+		"movietype" : "Romance",
+		"rating" : "7.1",
+		"popularity" : "-101368"
+	},
+	{
+		"movietype" : "Sci_fi",
+		"rating" : "7.1",
+		"popularity" : "-203773"
+	},
+	{
+		"movietype" : "Sport",
+		"rating" : "7.2",
+		"popularity" : "-100777"
+	},
+	{
+		"movietype" : "Thriller",
+		"rating" : "7.1",
+		"popularity" : "-133674"
+	},
+	{
+		"movietype" : "War",
+		"rating" : "7.8",
+		"popularity" : "-149002"
+	},
+	{
+		"movietype" : "Western",
+		"rating" : "7.6",
+		"popularity" : "-141405"
+	},
+	{
+		"movietype" : "Action",
+		"rating" : "7.7",
+		"popularity" : "66106"
+	},
+	{
+		"movietype" : "Adventure",
+		"rating" : "7.9",
+		"popularity" : "63100"
+	},
+	{
+		"movietype" : "Animation",
+		"rating" : "8.5",
+		"popularity" : "63031"
+	},
+	{
+		"movietype" : "Biography",
+		"rating" : "8.6",
+		"popularity" : "54620"
+	},
+	{
+		"movietype" : "Comedy",
+		"rating" : "8.1",
+		"popularity" : "45709"
+	},
+	{
+		"movietype" : "Crime",
+		"rating" : "8.2",
+		"popularity" : "47861"
+	},
+	{
+		"movietype" : "Drama",
+		"rating" : "8.4",
+		"popularity" : "72608"
+	},
+	{
+		"movietype" : "Family",
+		"rating" : "8.3",
+		"popularity" : "104512"
+	},
+	{
+		"movietype" : "Fantasy",
+		"rating" : "8.1",
+		"popularity" : "101353"
+	},
+	{
+		"movietype" : "Film_noir",
+		"rating" : "8.2",
+		"popularity" : "11786"
+	},
+	{
+		"movietype" : "History",
+		"rating" : "8.3",
+		"popularity" : "64805"
+	},
+	{
+		"movietype" : "Horror",
+		"rating" : "7.4",
+		"popularity" : "36323"
+	},
+	{
+		"movietype" : "Music",
+		"rating" : "8.8",
+		"popularity" : "104833"
+	},
+	{
+		"movietype" : "Musical",
+		"rating" : "8.2",
+		"popularity" : "69861"
+	},
+	{
+		"movietype" : "Mystery",
+		"rating" : "8.0",
+		"popularity" : "57701"
+	},
+	{
+		"movietype" : "Romance",
+		"rating" : "8.3",
+		"popularity" : "66351"
+	},
+	{
+		"movietype" : "Sci_fi",
+		"rating" : "7.8",
+		"popularity" : "107008"
+	},
+	{
+		"movietype" : "Sport",
+		"rating" : "8.4",
+		"popularity" : "33487"
+	},
+	{
+		"movietype" : "Thriller",
+		"rating" : "7.9",
+		"popularity" : "58313"
+	},
+	{
+		"movietype" : "War",
+		"rating" : "8.5",
+		"popularity" : "89431"
+	},
+	{
+		"movietype" : "Western",
+		"rating" : "8.2",
+		"popularity" : "32672"
+	}
+]
+

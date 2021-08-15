@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Top250Rating</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/echarts.js"></script>
+    <style type="text/css">
+        html{
+          height: 100%;
+          margin: 0;
+        }
+        body{
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          background-color: rgba(24,20,50,1);
+        }
+        #top250rating{
+            height: 100%;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="top250rating" style="width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+        function loadLocalDataAndShow(){
+            var chartDom = document.getElementById('top250rating');
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            option = {
+                title: {
+                    text: 'TOP250 Rating',
+                    left:  "center",
+                    textStyle: {
+                        fontSize: 40,
+                        color: '#7B68CE'
+                    }
+                },
+                backgroundColor: "rgba(24,20,50,1)",
+                color: ['#67F9D8', '#F08080'],
+                grid:{
+                    x:100,
+                    x2:400,
+                    borderWidth:1
+                },
+                legend: {
+                    data: ['DouBan', 'IMDB'],
+                    orient: 'vertical',
+                    x:'right',
+                    y:'top',
+                    padding: [20, 20, 0, 0],
+                    itemWidth: 40,
+                    itemHeight: 20,
+                    textStyle: {
+                        color: "rgba(255, 255, 255, 1)",
+                        fontSize: '15'
+                    }
+                },
+                xAxis: {
+                    name: 'Rating',
+                    nameLocation: 'middle',
+                    nameGap: 30,
+                    nameTextStyle: {
+                        fontSize: 30,
+                        color: '#FAFAD2'
+                    },
+                    type: "value",
+                    scale: true,
+                    axisLabel: {
+                        formatter: "{value}"
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    axisLine:{
+                        lineStyle: {
+                            color: 'white',
+                            width: 3,
+                        }
+                    }
+                },
+                yAxis: {
+                    name: 'Rank',
+                    nameLocation: 'middle',
+                    nameGap: 30,
+                    nameTextStyle: {
+                        fontSize: 30,
+                        color: '#FAFAD2'
+                    },
+                    type: "value",
+                    scale: true,
+                    axisLabel: {
+                        formatter: "{value}"
+                    },
+                    axisLine:{
+                        lineStyle: {
+                            color: 'white',
+                            width: 3,
+                        }
+                    }
+
+                },
+                tooltip: {
+                    position: 'top',
+                    formatter: function(Data){
+                        return Data.name + ": ["+ Data.value +  "]";
+                    },
+                },
+                radar: {
+                    // shape: 'circle',
+                    indicator: [
+                        { name: '5', },
+                        { name: '4', },
+                        { name: '3', },
+                        { name: '2', },
+                        { name: '1', },
+                    ],
+                    name: {
+                        textStyle: {
+                            fontSize: "20",
+                            color: '#87CEFA',
+                            backgroundColor: 'darkblue',
+                            borderRadius: 90,
+                            padding: [5, 10]
+                        }
+                    },
+                    center: ['87%', '50%'],
+                    radius: 100
+
+                },
+                series: [
+                    {
+                        id: 'TheRadar',
+                        type: 'radar',
+                        data: [],
+                        areaStyle: {
+                            color: new echarts.graphic.RadialGradient(0.1, 0.6, 1, [
+                                {
+                                    color: 'rgba(20, 255, 200, 0.5)',
+                                    offset: 0
+                                },
+                                {
+                                    color: 'rgba(255, 100, 100, 0.5)',
+                                    offset: 1
+                                }
+                            ])
+                        }
+                    },
+
+                    // scatter dataset:
+                    // douban
+                    {
+                        id: 'DouBanScatter',
+                        name: 'DouBan',
+                        type: 'scatter',
+                        data: [],
+                    },
+                    // imdb
+                    {
+                        id: 'IMDBScatter',
+                        name: 'IMDB',
+                        type: 'scatter',
+                        data: [],
+                    }
+                ],
+            };
+
+            myChart.setOption(option);
+
+            /*
+                ajax 功能
+             */
+
+            var doubanData = [];
+            var imdbData = [];
+            var doubanStar = [];
+            var imdbStar = [];
+            var Star = [doubanStar, imdbStar];
+
+            // douban json 导入
+            $.ajax({
+                type : 'get',
+                url : 'json/doubanrating.json',
+                dataType : "json",
+                success : function(result){
+                    var doubanName = [];
+                    var doubanRating = [];
+                    var doubanRank = []
+
+                    var doubanstar1 = [];
+                    var doubanstar2 = [];
+                    var doubanstar3 = [];
+                    var doubanstar4 = [];
+                    var doubanstar5 = [];
+                    // 提取数组中的每一个元素的 category 和 num 分别放入 names、nums
+                    $.each(result, function(index, item){
+                        doubanName.push(item.name);
+                        doubanRating.push(item.rating);
+                        doubanRank.push(item.rank);
+                        doubanstar1.push(item.star1);
+                        doubanstar2.push(item.star2);
+                        doubanstar3.push(item.star3);
+                        doubanstar4.push(item.star4);
+                        doubanstar5.push(item.star5);
+                    });
+                    for (var i = 0; i <result.length; i++){
+                        doubanData.push({name: doubanName[i], value: [doubanRating[i], doubanRank[i]]});
+                        doubanStar.push([doubanstar1[i], doubanstar2[i], doubanstar3[i], doubanstar4[i], doubanstar5[i]]);
+                    }
+                    console.log(doubanData);
+                    console.log(doubanStar);
+                    console.log(Star);
+                    myChart.hideLoading();
+                    myChart.setOption({
+                        series : [
+                            {
+                                id: 'DouBanScatter',
+                                name: 'DouBan',
+                                data : doubanData
+                            },
+                        ]
+                    });
+                }
+            })
+
+            // imdb json 导入
+            $.ajax({
+                type : 'get',
+                url : 'json/imdbrating.json',
+                dataType : "json",
+                success : function(result){
+                    var imdbName = [];
+                    var imdbRating = [];
+                    var imdbRank = [];
+
+                    var imdbstar1 = [];
+                    var imdbstar2 = [];
+                    var imdbstar3 = [];
+                    var imdbstar4 = [];
+                    var imdbstar5 = [];
+                    // 提取数组中的每一个元素的 category 和 num 分别放入 names、nums
+                    $.each(result, function(index, item){
+                        imdbName.push(item.name);
+                        imdbRating.push(item.rating);
+                        imdbRank.push(item.rank);
+                        imdbstar1.push(item.star1);
+                        imdbstar2.push(item.star2);
+                        imdbstar3.push(item.star3);
+                        imdbstar4.push(item.star4);
+                        imdbstar5.push(item.star5);
+                    });
+                    for (var i = 0; i <result.length; i++){
+                        imdbData.push({name: imdbName[i], value: [imdbRating[i], imdbRank[i]]});
+                        imdbStar.push([imdbstar1[i], imdbstar2[i], imdbstar3[i], imdbstar4[i], imdbstar5[i]]);
+                    }
+                    console.log(imdbData);
+                    console.log(imdbStar);
+                    console.log(Star);
+                    myChart.hideLoading();
+                    myChart.setOption({
+                        series : [
+                            {
+                                id: 'IMDBScatter',
+                                name: 'IMDB',
+                                data : imdbData
+                            },
+                        ]
+                    });
+                }
+            })
+
+            // radar 数据读取
+        }
+        loadLocalDataAndShow();
+
+    </script>
+</body>
+</html>

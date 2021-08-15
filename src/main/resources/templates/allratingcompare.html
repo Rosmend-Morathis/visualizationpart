@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AllMoviesRatingCompare</title>
+    <!-- 引入 echarts.js -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/echarts.js"></script>
+    <!-- html 样式设置 -->
+    <style type="text/css">
+        html{
+            height: 100%;
+            margin: 0;
+        }
+        body{
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background-color: rgba(24,20,50,1);
+        }
+        #main{
+            height: 100%;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+    <div id="main" style="width: 100%;height: 100%;"></div>
+    <script type="text/javascript">
+        // 定义图表构建函数
+        function loadLocalDataAndShow(){
+            // 初始化echarts实例
+            var chartDom = document.getElementById('main');
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            // 指定图表的配置项和数据
+            option = {
+                // 标题配置
+                title: [{
+                    top: 30,
+                    text: 'DouBan & IMDB 电影评分分布抽样',
+                    left:  "center",
+                    textStyle: {
+                        fontSize: 40,
+                        color: '#FAFAD2'
+                    }
+                },{
+                    subtext: 'DouBan 评分饼图',     // 子标题配置
+                    left: '25%',
+                    top: '82%',
+                    textAlign: 'center',
+                    subtextStyle: {
+                        fontSize: 30,
+                        color: '#FAFAD2'
+                    }
+                },{
+                    subtext: 'IMDB 评分饼图',     // 子标题配置
+                    left: '75%',
+                    top: '82%',
+                    textAlign: 'center',
+                    subtextStyle: {
+                        fontSize: 30,
+                        color: '#FAFAD2'
+                    }
+                }],
+                backgroundColor: "rgba(24,20,50,1)",
+                textStyle: {
+                    color: 'rgba(255, 255, 255, 0.9)'
+                },
+                tooltip: {},
+                // 图例配置 -- 不显示图例
+                legend: {
+                    show: false,
+                },
+                // 图表配置 -- 饼图
+                series: [
+                    // 分别绘制 豆瓣 和 IMDB 的饼图
+                    {
+                        name: 'DouBan',
+                        center: ['25%', '50%'],
+                        type: 'pie',
+                        radius: '50%',  // 半径
+                        data: [],   // 数据初始化时为空，后续动态加载
+                        // 图形样式
+                        itemStyle: {
+                            // 设置扇形阴影颜色
+                            shadowBlur: 200,
+                            shadowColor: 'rgba(0, 100, 255, 0.8)'
+                        }
+                    },
+                    {
+                        name: 'IMDB',
+                        center: ['75%', '50%'],
+                        type: 'pie',
+                        radius: '50%',  // 半径
+                        data: [],   // 数据初始化时为空，后续动态加载
+                        // 图形样式
+                        itemStyle: {
+                            // 设置扇形阴影颜色
+                            shadowBlur: 200,
+                            shadowColor: 'rgba(0, 100, 255, 0.8)'
+                        }
+                    }
+                ]
+            };
+            // 初始化配置项
+            myChart.setOption(option);
+
+            // 声明数据数组变量
+            var doubanData = [];
+            var imdbData = [];
+
+            /*
+               ajax 实现 json 数据的导入与处理
+            */
+            // douban json 数据导入
+            $.ajax({
+                type: 'get',  // 获取方法
+                url: 'json/doubanscore.json',   // 路径
+                dataType: 'json',    // 数据类型
+                // 获取成功，对数据进行处理
+                success :  function (result){
+                    // 提取数组中的每一个元素的 评分、评分人数 分别存储
+                    // 格式:
+                    //      key: score
+                    //      value: num
+                    $.each(result, function (index, item){
+                        if(item.douban_num != '0')
+                            doubanData.push({name: item.Score, value: item.Num});
+                    })
+                    // console.log() 验证格式
+                    // console.log(doubanData);
+                    // console.log(imdbData);
+                    // 隐藏加载效果，完成数据配置
+                    myChart.hideLoading();
+                    myChart.setOption({
+                        series : [ {
+                            name: 'DouBan',
+                            data: doubanData,
+                            // 标签配置
+                            label: {
+                                textStyle: {
+                                    color: 'rgba(255, 255, 255, 0.9)',
+                                    fontSize: 15
+                                }
+                            },
+                            // 标签引导线配置
+                            labelLine: {
+                                lineStyle: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            },
+                        },{
+                            name: 'IMDB',
+                            data: imdbData,
+                            // 对标签重新配置
+                            label: {
+                                textStyle: {
+                                    color: 'rgba(255, 255, 255, 0.9)',
+                                    fontSize: 15
+                                }
+                            },
+                            // 标签引导线配置
+                            labelLine: {
+                                lineStyle: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            },
+                        }]
+                    });
+                }
+            });
+            // imdb json 数据导入
+            $.ajax({
+                type: 'get',  // 获取方法
+                url: 'json/imdbscore.json',   // 路径
+                dataType: 'json',    // 数据类型
+                // 获取成功，对数据进行处理
+                success :  function (result){
+                    // 提取数组中的每一个元素的 评分、评分人数 分别存储
+                    // 格式:
+                    //      key: score
+                    //      value: num
+                    $.each(result, function (index, item){
+
+                        if(item.imdb_num != '0')
+                            imdbData.push({name: item.Score, value: item.Num});
+                    })
+                    // console.log() 验证格式
+                    // console.log(doubanData);
+                    // console.log(imdbData);
+                    // 隐藏加载效果，完成数据配置
+                    myChart.hideLoading();
+                    myChart.setOption({
+                        series : [{
+                            name: 'DouBan',
+                            data: doubanData,
+                            // 标签配置
+                            label: {
+                                textStyle: {
+                                    color: 'rgba(255, 255, 255, 0.9)',
+                                    fontSize: 15
+                                }
+                            },
+                            // 标签引导线配置
+                            labelLine: {
+                                lineStyle: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            },
+                        },{
+                            name: 'IMDB',
+                            data: imdbData,
+                            // 对标签重新配置
+                            label: {
+                                textStyle: {
+                                    color: 'rgba(255, 255, 255, 0.9)',
+                                    fontSize: 15
+                                }
+                            },
+                            // 标签引导线配置
+                            labelLine: {
+                                lineStyle: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            },
+                        }]
+                    });
+                }
+            });
+        }
+        // 执行图表构建函数
+        loadLocalDataAndShow();
+
+    </script>
+</body>
+</html>

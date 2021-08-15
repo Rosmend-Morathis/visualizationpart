@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CompareByMovieType</title>
+    <!-- 引入 echarts.js -->
+    <script src="js/echarts.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <!-- html 样式设置 -->
+    <style type="text/css">
+        html{
+          height: 100%;
+          margin: 0;
+        }
+        body{
+          height: 100%;
+          width: 100%;
+          background-color: rgba(24,20,50,1);
+          margin: 0;
+        }
+        #main{
+          height: 100%;
+          margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+    <div id="main" style="width: 100%; height: 100%;"></div>
+    <script type="text/javascript">
+        // 定义图表构建函数
+        function loadLocalDataAndShow(){
+        // 初始化echarts实例
+        var chartDom = document.getElementById('main');
+        var myChart = echarts.init(chartDom);
+        var option;
+        // 指定图表的配置项和数据
+        option = {
+            // 标题配置
+            title: {
+                text: 'DouBan & IMDB 评分与热度对比图',
+                top: 20,
+                left:  "center",
+                textStyle: {
+                    fontSize: 40,
+                    color: '#FAFAD2'
+                }
+            },
+            // 数据集初始化
+            dataset: {
+                source: [], // 初始化为空，后续动态加载
+            },
+            // 提示框组件配置
+            tooltip: {
+                position: 'top',
+                // 自定义提示文本格式
+                formatter: function(data){
+                    if(data.value[1][0]!='-')
+                        return "DouBan: 类型---" + data.name + " | 平均评分---" + data.value[0] + " | 热度---"+ data.value[1];
+                    else
+                        return "IMDB: 类型---" + data.name + " | 平均评分---" + data.value[0] + " | 热度--"+ data.value[1];
+                },
+            },
+            // 坐标刻度
+            grid: {containLabel: true},
+            // 坐标轴配置
+            xAxis: {
+                // name: '热度',
+                // nameLocation: 'middle',
+                // nameGap: 30,
+                // nameTextStyle: {
+                //     fontSize: 20,
+                //     color: '#87CEFA',
+                // },
+                axisLabel:{
+                    textStyle:{
+                        fontSize: 0
+                    }
+                },
+            },
+            yAxis: {
+                type: 'category',
+                axisLabel:{
+                    textStyle:{
+                        fontSize: 15,
+                        color: 'white'
+                    }
+                },
+            },
+            // 视觉映射配置
+            visualMap: {
+                orient: 'horizontal',   // 组件水平
+                left: 'center',
+                bottom: 50,
+                min: 7,
+                max: 9,      // 评分区间 0~10
+                text: ['9分', '7分'],
+                textStyle: {
+                    color: ['#FFCE34'],
+                    fontSize: 15,
+                },
+                // Map the score column to color
+                dimension: 0,
+                inRange: {      // 渐变色处理，高分红色，低分绿色
+                    color: ['#19ffd0','#f5fd29', '#ff313e']
+                }
+            },
+            // 图表配置 -- 柱状图
+            series: [{
+                type: 'bar',
+                // barWidth: 40,
+                encode: {
+                    // x 轴 映射 热度
+                    x: 'popularity',
+                    // y 轴 映射 影片类型
+                    y: 'movietype'
+                }
+            }]
+        };
+        // 初始化配置项
+        myChart.setOption(option);
+
+        // 声明数据数组变量
+        var ratingData = [];
+
+        /*
+            ajax 实现 json 数据的导入与处理
+        */
+        // json 数据导入
+        $.ajax({
+            type : 'get',     // 获取方法
+            url : 'json/compare.json',   // 路径
+            dataType : "json",    // 数据类型
+            // 获取成功，对数据进行处理
+            success : function(result){
+                // 存入数据源头信息
+                ratingData.push(['rating', 'popularity', 'movietype']);
+                // 提取每个元素的 rating, popularity, movietype 分别存储
+                $.each(result, function(index, item){
+                    ratingData.push([item.rating, item.popularity, item.movietype]);
+                });
+                // console.log() 验证格式
+                // console.log(ratingData);
+                // 隐藏加载效果，完成数据配置
+                myChart.hideLoading();
+                myChart.setOption({
+                    dataset: {
+                        source: ratingData
+                    }
+                });
+            }
+        })
+        }
+        // 执行图表构建函数
+        loadLocalDataAndShow();
+
+    </script>
+</body>
+</html>
